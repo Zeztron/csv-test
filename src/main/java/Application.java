@@ -19,16 +19,34 @@ public class Application {
         String inputPath = "src/main/resources/input.csv";
         String outputPath = "src/main/resources/output.csv";
 
-        List<List<String>> records = new ArrayList<>();
+        List<ArrayList<String>> records = new ArrayList<>();
 
-        try (CSVReader csvReader = new CSVReader(new FileReader(inputPath))) {
+        try (
+                CSVReader csvReader = new CSVReader(new FileReader(inputPath));
+                CSVWriter csvWriter = new CSVWriter(new FileWriter(outputPath), CSVWriter.DEFAULT_SEPARATOR,
+                        CSVWriter.NO_QUOTE_CHARACTER,
+                        CSVWriter.DEFAULT_ESCAPE_CHARACTER,
+                        CSVWriter.RFC4180_LINE_END)
+        ) {
 
             String[] values = null;
             while((values = csvReader.readNext()) != null) {
                 records.add(new ArrayList<>(Arrays.asList(values)));
             }
 
-            
+            records.get(0).add("report_date");
+
+            for (List<String> record : records.subList(1, records.size())) {
+                record.add("date");
+                Collections.replaceAll(record, "-", null);
+            }
+
+            for (ArrayList<String> record : records) {
+                String[] temp = record.toArray(new String[] {});
+                csvWriter.writeNext(temp);
+            }
+
+
 
 
 

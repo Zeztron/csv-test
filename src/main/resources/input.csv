@@ -1,4 +1,4 @@
 id,firstname,lastname
-1,harsh,patel
-2,john,does
+1,-,patel
+2,john,-
 3,jane,doe
