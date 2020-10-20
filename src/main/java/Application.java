@@ -8,6 +8,7 @@ import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 public class Application {
@@ -37,25 +38,37 @@ public class Application {
             records.get(0).add("report_date");
 
             int index = 0;
-            int medianRowNumber = 0;
-            boolean medianFound = false;
+            ArrayList<Integer> rowNumsToDelete = new ArrayList<>();
             for (List<String> record : records.subList(1, records.size())) {
 
                 record.add("date");
                 index++;
                 if (record.contains("median")) {
-                    medianFound = true;
-                    medianRowNumber = index;
+                    rowNumsToDelete.add(index);
                 }
+
 
                 Collections.replaceAll(record, "-", null);
 
             }
 
-            if (medianFound) {
-                logger.info(String.valueOf(medianRowNumber));
-                records.remove(medianRowNumber);
+
+
+            if (rowNumsToDelete.size() > 0) {
+                // Sort the arraylist of row numbers to delete so that each removal does not shift the records.
+
+                rowNumsToDelete.sort(Collections.reverseOrder());
+
+                for (int rowNumToDelete : rowNumsToDelete) {
+                    records.remove(rowNumToDelete);
+                }
             }
+
+
+//            if (medianFound) {
+//                logger.info(String.valueOf(medianRowNumber));
+//                records.remove(medianRowNumber);
+//            }
 
             for (ArrayList<String> record : records) {
                 String[] temp = record.toArray(new String[] {});
